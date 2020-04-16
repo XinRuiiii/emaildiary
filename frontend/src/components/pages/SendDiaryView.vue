@@ -1,9 +1,9 @@
 <template>
-    <div id="diary" :style="{ width:screenWidth*0.8+'px', height:screenHeight+'px'}">
+    <div id="diary" :style="{ width: screenWidth * 0.8 + 'px', height: screenHeight + 'px'}">
         <wired-button id="btnBack">返回主页</wired-button>
-<!--        暂时添加login登录-->
-        <wired-button  @click="login">登录</wired-button>
-<!--        暂时添加login登录-->
+        <!--        暂时添加login登录-->
+        <wired-button @click="login">登录</wired-button>
+        <!--        暂时添加login登录-->
         <wired-input id="diaryTitleInput" :value="diaryTitle" @input="diaryTitle=$event.target.value"
                      placeholder="日记标题" elevation="2"/>
         <wired-textArea id="diaryTextArea" :value="diaryText" @input="diaryText=$event.target.value"
@@ -13,8 +13,8 @@
     </div>
 </template>
 <script>
-    import SEND_DIARY from '../../graphql/diarysend/SEND_DIARY.graphql'
-    import LOGIN from '../../graphql/diarysend/LOGIN.graphql'
+    import SendDiary from '../../graphql/diarysend/SendDiary.graphql'
+    import Login from '../../graphql/diarysend/Login.graphql'
 
 
     let screenHeight = document.documentElement.clientHeight;
@@ -31,8 +31,8 @@
                 diaryTitle: '',
                 diaryText: '',
                 // TODO 开发时暂时使用，后续修改
-                email: "1429358374@qq.com",
-                password: "111111"
+                email: '',
+                password: ''
             }
         },
         methods: {
@@ -40,7 +40,7 @@
             login() {
                 this.$apollo
                     .mutate({
-                        mutation: LOGIN,
+                        mutation: Login,
                         variables: {
                             email: this.email,
                             password: this.password
@@ -63,19 +63,19 @@
             sendDiary: function () {
                 this.$apollo
                     .mutate({
-                        mutation:SEND_DIARY,
+                        mutation: SendDiary,
                         variables: {
                             diaryTitle: this.diaryTitle,
                             diaryText: this.diaryText
                         }
                     })
-                    .then(()=>{
+                    .then(() => {
                         console.log('日记发送成功，跳转到主页');
-                        this.$router.push({path:'/'});
+                        this.$router.push({path: '/'});
                     })
-                    .catch((error)=>{
+                    .catch((error) => {
                         alert('日记发送失败');
-                        console.log('日记发送失败：'+error.message);
+                        console.log('日记发送失败：' + error.message);
                     })
             }
         }

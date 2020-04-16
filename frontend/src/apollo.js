@@ -8,7 +8,7 @@ import Vue from "vue"
 
 Vue.use(VueApollo);
 
-//设置header,设置Authorization
+//设置 header,设置 Authorization
 const middlewareLink = new ApolloLink((operation, forward) => {
     const token = localStorage.getItem('token');
     operation.setContext({
