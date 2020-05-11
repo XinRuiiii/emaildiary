@@ -13,7 +13,7 @@ const middlewareLink = new ApolloLink((operation, forward) => {
     const token = localStorage.getItem('token');
     operation.setContext({
         headers: {
-            Authorization: (token === "null") ? null : `JWT ${token}`
+            Authorization: (token === null) ? null : `JWT ${token}`
         }
     });
     return forward(operation);
