@@ -1,0 +1,9 @@
+.ql-snow .ql-picker.ql-font .ql-picker-label::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item::before {
+    content: "naughty-lite-2";
+    font-family: "naughty-lite-2";
+}
+
+.ql-font-naughty-lite-2{
+    font-family: "naughty-lite-2";
+}

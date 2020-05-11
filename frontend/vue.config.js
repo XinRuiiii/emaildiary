@@ -11,4 +11,16 @@ module.exports = {
             .loader('graphql-tag/loader')
             .end()
     },
+    // devServer: {
+    //     proxy:
+    //         {
+    //             '/api': {
+    //                 target: 'http://118.25.251.20:8000',
+    //                 changeOrigin: true,
+    //                 pathRewrite: {
+    //                     '^/api': '/'
+    //                 }
+    //             }
+    //         }
+    // }
 };

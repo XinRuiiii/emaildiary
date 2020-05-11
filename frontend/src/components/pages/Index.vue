@@ -16,8 +16,12 @@
 
         <!--        此处暂时添加一个链接跳转到日记编辑界面-->
         <!--    TODO card边框导致边框内部不可点击，调试时点击边框外部-->
-        <div >
+        <div>
             <router-link :to="{ name: 'sendDiary' }">sendDiary</router-link>
+            <router-view></router-view>
+        </div>
+        <div>
+            <router-link :to="{ name: 'showDiary' }">showDiary</router-link>
             <router-view></router-view>
         </div>
         <!--        此处暂时添加一个链接跳转到日记编辑界面-->

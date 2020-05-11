@@ -4,10 +4,11 @@
         <!--        暂时添加login登录-->
         <wired-button @click="login">登录</wired-button>
         <!--        暂时添加login登录-->
-        <wired-input id="diaryTitleInput" :value="diaryTitle" @input="diaryTitle=$event.target.value"
-                     placeholder="日记标题" elevation="2"/>
-        <wired-textArea id="diaryTextArea" :value="diaryText" @input="diaryText=$event.target.value"
-                        placeholder="记录下你的一天吧" rows="10" elevation="5"/>
+        <div id="diaryTextArea">
+            <DiaryEditor :diary-text.sync="diaryText"
+                         :diary-title.sync="diaryTitle">
+            </DiaryEditor>
+        </div>
         <wired-button id="btnSave" @click="saveDraft" elevation="3">保存</wired-button>
         <wired-button id="btnSend" @click="sendDiary" elevation="3">发送</wired-button>
     </div>
@@ -15,24 +16,32 @@
 <script>
     import SendDiary from '../../graphql/diarysend/SendDiary.graphql'
     import Login from '../../graphql/diarysend/Login.graphql'
-
-
-    let screenHeight = document.documentElement.clientHeight;
-    let screenWidth = document.documentElement.clientWidth;
+    import DiaryEditor from "../DiaryComponents/DiaryEditor";
 
 
     export default {
         name: 'SendView',
+        components: {DiaryEditor},
         // 在 `methods` 对象中定义方法
         data() {
             return {
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
+                screenWidth: document.documentElement.clientWidth,
+                screenHeight: document.documentElement.clientHeight,
                 diaryTitle: '',
                 diaryText: '',
                 // TODO 开发时暂时使用，后续修改
-                email: '',
-                password: ''
+                email: '1429358374@qq.com',
+                password: '111111',
+            }
+        },
+        mounted() {
+            window.onresize = () => {
+                return (() => {
+                    window.screenWidth = document.documentElement.clientWidth
+                    window.screenHeight = document.documentElement.clientHeight
+                    this.screenHeight = document.documentElement.clientHeight
+                    this.screenWidth = window.screenWidth
+                })()
             }
         },
         methods: {
@@ -54,11 +63,13 @@
                         alert('登录失败。');
                         console.log(error.message);
                     });
-            },
+            }
+            ,
             // TODO 保存草稿
             saveDraft: function () {
                 alert('功能待完成');
-            },
+            }
+            ,
             // 发送日记
             sendDiary: function () {
                 this.$apollo
@@ -77,6 +88,17 @@
                         alert('日记发送失败');
                         console.log('日记发送失败：' + error.message);
                     })
+            },
+            // 获取日期，天气
+            showHeader: function () {
+                let date = new Date();
+                console.log(date) //Wed Aug 21 2019 10:00:58 GMT+0800 (中国标准时间)
+                this.value =
+                    date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                console.log(this.value) //2019-8-20
+            },
+            created: function () {
+                this.showHeader()
             }
         }
     }
@@ -88,21 +110,11 @@
 
     #diary {
         font-family: naughty-lite-2, serif;
-    }
-
-    #btnBack {
         margin-left: 10%;
-    }
-
-    #diaryTitleInput {
-        width: 100%;
-        margin-left: 10%;
-        margin-top: calc(5vh);
     }
 
     #diaryTextArea {
         width: 100%;
-        margin-left: 10%;
         margin-top: calc(5vh);
     }
 
@@ -117,4 +129,5 @@
         display: block;
         margin-top: 5%;
     }
+
 </style>

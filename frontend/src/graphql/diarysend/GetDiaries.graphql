@@ -1,0 +1,10 @@
+query GetDiaries{
+  user{
+    diaries{
+      title
+      releaseTime
+      updateTime
+      content
+    }
+  }
+}

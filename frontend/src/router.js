@@ -2,6 +2,7 @@ import Router from 'vue-router'
 import Index from './components/pages/Index'
 import Vue from 'vue'
 import sendDiaryView from './components/pages/SendDiaryView'
+import showDiaryView from './components/pages/ShowDiaryView'
 
 
 Vue.use(Router);
@@ -20,5 +21,10 @@ export default new Router({
             name: 'sendDiary',
             component: sendDiaryView
         },
+        {
+            path: '/showDiary',
+            name: 'showDiary',
+            component: showDiaryView
+        }
     ]
 })

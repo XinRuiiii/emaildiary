@@ -11,6 +11,8 @@
 </script>
 
 <style>
+    @import './style/font.css';
+
     @font-face {
         font-family: naughty-lite-2;
         src: url('assets/fonts/fangzhengjinglei.ttf');
