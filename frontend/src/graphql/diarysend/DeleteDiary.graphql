@@ -1,8 +1,5 @@
 mutation DeleteDiary($releaseTime: DateTime!){
     deleteDiary(releaseTime: $releaseTime){
-        diary{
-            title
-            content
-        }
+        success
     }
 }

@@ -6,6 +6,7 @@ import showDiaryView from './components/pages/ShowDiaryView'
 
 import EditTest from "./components/pages/EditTest"
 import SignInOrUp from "./components/pages/SignInOrUp";
+import DiaryView from "./components/pages/DiaryView";
 
 Vue.use(Router);
 
@@ -38,5 +39,10 @@ export default new Router({
             name: 'signIn',
             component: SignInOrUp
         },
+        {
+            path: '/diary',
+            name: 'diary',
+            component: DiaryView
+        }
     ]
 })

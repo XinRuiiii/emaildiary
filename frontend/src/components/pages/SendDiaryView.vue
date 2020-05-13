@@ -1,38 +1,34 @@
 <template>
-    <div id="diary" :style="{ width: screenWidth * 0.8 + 'px', height: screenHeight + 'px'}">
-        <wired-button id="btnBack">返回主页</wired-button>
-        <!--        暂时添加login登录-->
-        <wired-button @click="login">登录</wired-button>
-        <!--        暂时添加login登录-->
+    <div id="diary" :style="{ width: screenWidth  + 'px', height: screenHeight + 'px'}">
+        <time-card id="timeCard"></time-card>
         <div id="diaryTextArea">
             <DiaryEditor :diary-text.sync="diaryText"
-                         :diary-title.sync="diaryTitle">
+                         :diary-title.sync="diaryTitle"
+                         :editor-width="screenWidth*0.8">
             </DiaryEditor>
         </div>
-        <wired-button id="btnSave" @click="saveDraft" elevation="3">保存</wired-button>
         <wired-button id="btnSend" @click="sendDiary" elevation="3">发送</wired-button>
     </div>
 </template>
 <script>
-    import SendDiary from '../../graphql/diarysend/SendDiary.graphql'
-    import Login from '../../graphql/diarysend/Login.graphql'
-    import DiaryEditor from "../DiaryComponents/DiaryEditor";
-
+    import SendDiary from '../../graphql/diarysend/CreateDiary.graphql'
+    import DiaryEditor from "../DiaryComponents/DiaryEditor"
+    import TimeCard from "../DiaryComponents/TimeCard"
+    import {getToken} from "../../utils/token"
 
     export default {
         name: 'SendView',
-        components: {DiaryEditor},
-        // 在 `methods` 对象中定义方法
+        components: {TimeCard, DiaryEditor},
         data() {
             return {
                 screenWidth: document.documentElement.clientWidth,
                 screenHeight: document.documentElement.clientHeight,
                 diaryTitle: '',
-                diaryText: '',
-                // TODO 开发时暂时使用，后续修改
-                email: '1429358374@qq.com',
-                password: '111111',
+                diaryText: ''
             }
+        },
+        created() {
+            getToken()
         },
         mounted() {
             window.onresize = () => {
@@ -45,33 +41,11 @@
             }
         },
         methods: {
-            //实现简单的登录
-            login() {
-                this.$apollo
-                    .mutate({
-                        mutation: Login,
-                        variables: {
-                            email: this.email,
-                            password: this.password
-                        },
-                    })
-                    .then(result => {
-                        window.localStorage['token'] = result.data.tokenAuth.token;
-                        alert('登录成功，token已保存。');
-                    })
-                    .catch((error) => {
-                        alert('登录失败。');
-                        console.log(error.message);
-                    });
-            }
-            ,
-            // TODO 保存草稿
-            saveDraft: function () {
-                alert('功能待完成');
-            }
-            ,
             // 发送日记
-            sendDiary: function () {
+            async sendDiary() {
+                if (!await getToken()) {
+                    return
+                }
                 this.$apollo
                     .mutate({
                         mutation: SendDiary,
@@ -80,25 +54,18 @@
                             diaryText: this.diaryText
                         }
                     })
-                    .then(() => {
-                        console.log('日记发送成功，跳转到主页');
-                        this.$router.push({path: '/'});
+                    .then(result => {
+                        if (result.data.createDiary.success) {
+                            alert('日记发送成功');
+                            this.$router.push({name: 'index'})
+                        } else {
+                            alert('日记发送失败,请尝试重新发送')
+                        }
                     })
                     .catch((error) => {
-                        alert('日记发送失败');
-                        console.log('日记发送失败：' + error.message);
+                        alert('发送日记失败')
+                        console.log('发送日记失败：' + error.message)
                     })
-            },
-            // 获取日期，天气
-            showHeader: function () {
-                let date = new Date();
-                console.log(date) //Wed Aug 21 2019 10:00:58 GMT+0800 (中国标准时间)
-                this.value =
-                    date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-                console.log(this.value) //2019-8-20
-            },
-            created: function () {
-                this.showHeader()
             }
         }
     }
@@ -109,24 +76,22 @@
 <style scoped>
 
     #diary {
-        font-family: naughty-lite-2, serif;
+        /*font-family: naughty-lite-2, serif;*/
+        /*margin-left: 10%;*/
+    }
+
+    #timeCard {
         margin-left: 10%;
+        margin-top: 5%;
     }
 
     #diaryTextArea {
-        width: 100%;
-        margin-top: calc(5vh);
-    }
-
-    #btnSave {
-        float: right;
-        display: block;
-        margin-top: 5%;
+        margin-left: 10%;
+        margin-top: 3%;
     }
 
     #btnSend {
-        float: right;
-        display: block;
-        margin-top: 5%;
+        margin-left: 10%;
+        margin-top: 2%;
     }
 </style>

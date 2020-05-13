@@ -1,15 +1,19 @@
 <template>
     <div>
-        <wired-input id="diaryTitleInput" :value="editingDiaryTitle" @input="editingDiaryTitle=$event.target.value"
+        <wired-input id="diaryTitleInput" :value="editingDiaryTitle"
+                     @input="editingDiaryTitle=$event.target.value"
                      @change="onEditorChange($event)"
-                     placeholder="日记标题" elevation="2"/>
+                     placeholder="日记标题" elevation="2"
+                     :style="{width:editorWidth+'px'}"/>
         <wired-card id="diaryTextInput">
-            <quill-editor id="diaryContent"
-                          v-model="editingDiaryText"
-                          ref="myQuillEditor"
-                          :options="editorOption"
-                          @change="onEditorChange($event)">
-            </quill-editor>
+            <div :style="{width:editorWidth+'px'}">
+                <quill-editor id="diaryContent"
+                              v-model="editingDiaryText"
+                              ref="myQuillEditor"
+                              :options="editorOption"
+                              @change="onEditorChange($event)">
+                </quill-editor>
+            </div>
         </wired-card>
     </div>
 </template>
@@ -17,9 +21,9 @@
 <script>
     import Quill from 'quill'
 
-    // quill 编辑器的字体
-    var fonts = ['naughty-lite-2']
-    var Font = Quill.import('formats/font')
+
+    let fonts = ['naughty-lite-2']
+    let Font = Quill.import('formats/font')
     Font.whitelist = fonts;
     Quill.register(Font, true);
 
@@ -27,7 +31,8 @@
         name: "DiaryEditor",
         props: [
             'diaryTitle',
-            'diaryText'
+            'diaryText',
+            'editorWidth'
         ],
         data() {
             return {
@@ -37,19 +42,17 @@
                     placeholder: '记录下你的一天吧',
                     modules: {
                         toolbar: [
+                            [{'font': fonts}],
                             ['bold', 'italic', 'underline', 'strike'],        // 切换按钮
-                            ['blockquote', 'code-block'],
+                            [{'color': []}, {'background': []}],          // 具有主题默认值的下拉列表
+                            ['blockquote'],
                             [{'header': 1}, {'header': 2}],               // 标题 1，2
+                            [{'header': [1, 2, 3, 4, 5, 6, false]}],
                             [{'list': 'ordered'}, {'list': 'bullet'}],    //有序， 无序列表
-                            [{'script': 'sub'}, {'script': 'super'}],      // 上标/下标
                             [{'indent': '-1'}, {'indent': '+1'}],          // 缩进
                             [{'direction': 'rtl'}],                         // 文本方向
-                            [{'size': ['small', false, 'large', 'huge']}],  // 自定义下拉
-                            [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                            [{'color': []}, {'background': []}],          // 具有主题默认值的下拉列表
-                            [{'font': fonts}],
                             [{'align': []}],
-                            ['clean'],
+                            ['clean']
                         ]
                     },
                     theme: 'snow'
@@ -66,8 +69,7 @@
 </script>
 
 <style scoped>
-
-    #diaryTitleInput {
-        width: 100%;
+    #diaryTextInput {
+        margin-top: 2%;
     }
 </style>

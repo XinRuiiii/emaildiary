@@ -70,9 +70,16 @@
                         },
                     })
                     .then(result => {
-                        window.localStorage['token'] = result.data.tokenAuth.token;
-                        window.localStorage['refreshToken'] = result.data.tokenAuth.refreshToken;
+                        localStorage.setItem('payload', JSON.stringify(result.data.tokenAuth.payload));
+                        localStorage.setItem('token', result.data.tokenAuth.token);
+                        localStorage.setItem('refreshToken', result.data.tokenAuth.refreshToken);
+                        localStorage.setItem('refreshExpiresIn', result.data.tokenAuth.refreshExpiresIn);
+                        console.log('登录获取到的payload:', JSON.stringify(result.data.tokenAuth.payload));
+                        console.log('登录获取到的token:', result.data.tokenAuth.token);
+                        console.log('登录获取到的refreshToken:', result.data.tokenAuth.refreshToken);
+                        console.log('登录获取到的refreshExpiresIn:', result.data.tokenAuth.refreshExpiresIn);
                         alert('登录成功，token & refreshToken 已保存。');
+                        this.$router.go(-1);
                     })
                     .catch((error) => {
                         alert('登录失败。');

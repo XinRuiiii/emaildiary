@@ -1,14 +1,20 @@
 <template>
     <div>
-        <router-link to="/edit">
-            <wired-fab class="CreateDiaryButton">
-                <font-awesome-icon icon="pencil-alt"/>
+        <div>
+            <router-link to="/sendDiary">
+                <wired-fab class="CreateDiaryButton">
+                    <font-awesome-icon icon="pencil-alt"/>
+                </wired-fab>
+            </router-link>
+            <router-link to="/showDiary" class="btnShowDiary"> <wired-fab>
+                <font-awesome-icon icon="shower"/>
             </wired-fab>
-        </router-link>
+            </router-link>
+        </div>
         <div class="box">
             <!--        网页的边框-->
             <wired-card class="frame" elevation="5"/>
-            <index-diary></index-diary>
+            <index-diary id="indexDiary"></index-diary>
             <router-link to="/signIn">
                 <index-avatar></index-avatar>
             </router-link>
@@ -20,14 +26,13 @@
 </template>
 
 <script>
-    import DiaryList from "./IndexComponents/DiaryList";
-    import Avatar from "./IndexComponents/Avatar";
-    import SpiritList from "./IndexComponents/SpiritList";
+    import DiaryList from "./IndexComponents/DiaryList"
+    import Avatar from "./IndexComponents/Avatar"
+    import SpiritList from "./IndexComponents/SpiritList"
     import {library} from '@fortawesome/fontawesome-svg-core'
-    import {faPencilAlt} from '@fortawesome/free-solid-svg-icons'
+    import {faPencilAlt,faShower} from '@fortawesome/free-solid-svg-icons'
 
-
-    library.add(faPencilAlt)
+    library.add(faPencilAlt,faShower)
 
 
     export default {
@@ -35,8 +40,9 @@
         components: {
             'index-diary': DiaryList,
             'index-avatar': Avatar,
-            'index-spirit': SpiritList,
+            'index-spirit': SpiritList
         }
+
     }
 </script>
 
@@ -61,6 +67,12 @@
         --wired-fab-bg-color: pink;
     }
 
+    .btnShowDiary{
+        position: absolute;
+        margin-left: 15%;
+        margin-top: 1%;
+    }
+
     .frame {
         position: absolute;
         height: 100%;
@@ -68,5 +80,9 @@
         padding: 0;
         margin: 0;
         z-index: 0;
+    }
+
+    #indexDiary {
+        width: 65%;
     }
 </style>
