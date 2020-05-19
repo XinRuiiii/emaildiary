@@ -1,0 +1,5 @@
+mutation DeleteDiary($releaseTime: DateTime!){
+    deleteDiary(releaseTime: $releaseTime){
+        success
+    }
+}

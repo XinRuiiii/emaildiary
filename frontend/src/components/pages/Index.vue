@@ -1,28 +1,26 @@
 <template>
     <div>
-        <!--        跳转去日记编写页面的按钮-->
-        <router-link to="/edit">
-            <wired-fab class="CreateDiaryButton">
-                <font-awesome-icon icon="pencil-alt"/>
-            </wired-fab>
-        </router-link>
-        <!--        跳转去日记编写页面的按钮结束-->
-
         <!--        跳转去设置页面-->
             <wired-button id="setBtn" v-on:click="$router.push('/set')">资料设置</wired-button>
         <!--        跳转去设置页面结束-->
 
+      
+        <div>
+            <router-link to="/sendDiary">
+                <wired-fab class="CreateDiaryButton">
+                    <font-awesome-icon icon="pencil-alt"/>
+                </wired-fab>
+            </router-link>
+            <router-link to="/showDiary" class="btnShowDiary"> <wired-fab>
+                <font-awesome-icon icon="shower"/>
+            </wired-fab>
+            </router-link>
+        </div>
         <div class="box">
             <!--        网页的边框-->
             <wired-card class="frame" elevation="5"/>
-            <!--        网页的边框结束-->
-
-            <!--            显示最近 16 条日记的列表-->
-            <index-diary></index-diary>
-            <!--            显示最近 16 条日记的列表结束-->
-
-
-            <!--           跳转到登录/登出/注册/注销页面-->
+            <index-diary id="indexDiary"></index-diary>
+            <router-link to="/signIn">
                 <index-avatar></index-avatar>
             <!--            跳转到登录/登出/注册/注销页面-->
 
@@ -36,14 +34,13 @@
 </template>
 
 <script>
-    import DiaryList from "./IndexComponents/DiaryList";
-    import Avatar from "./IndexComponents/Avatar";
-    import SpiritList from "./IndexComponents/SpiritList";
+    import DiaryList from "./IndexComponents/DiaryList"
+    import Avatar from "./IndexComponents/Avatar"
+    import SpiritList from "./IndexComponents/SpiritList"
     import {library} from '@fortawesome/fontawesome-svg-core'
-    import {faPencilAlt} from '@fortawesome/free-solid-svg-icons'
+    import {faPencilAlt,faShower} from '@fortawesome/free-solid-svg-icons'
 
-
-    library.add(faPencilAlt)
+    library.add(faPencilAlt,faShower)
 
 
     export default {
@@ -51,8 +48,9 @@
         components: {
             'index-diary': DiaryList,
             'index-avatar': Avatar,
-            'index-spirit': SpiritList,
+            'index-spirit': SpiritList
         }
+
     }
 </script>
 
@@ -80,6 +78,10 @@
     #setBtn {
         position: absolute;
         margin-left: 200px;
+
+    .btnShowDiary{
+        position: absolute;
+        margin-left: 15%;
         margin-top: 1%;
     }
 
@@ -90,5 +92,9 @@
         padding: 0;
         margin: 0;
         z-index: 0;
+    }
+
+    #indexDiary {
+        width: 65%;
     }
 </style>

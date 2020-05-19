@@ -1,125 +1,193 @@
 <template>
     <!--存储日记的box-->
     <div class="box">
-        <wired-card fill="#FFB6C1" elevation="3" class="diary1">
-            <div align="center" style="text-overflow: clip">{{msg1}}</div>
-        </wired-card>
-        <wired-card fill="#6495ED" elevation="3" class="diary2">
-            <div align="center" style="text-overflow: clip">{{msg2}}</div>
-        </wired-card>
-        <wired-card fill="#7FFFAA" elevation="3" class="diary3">
-            <div align="center" style="text-overflow: clip">{{msg3}}</div>
-        </wired-card>
-        <wired-card fill="#BA55D3" elevation="3" class="diary4">
-            <div align="center" style="text-overflow: clip">{{msg4}}</div>
-        </wired-card>
-        <wired-card fill="#FAFAD2" elevation="3" class="diary5">
-            <div align="center" style="text-overflow: clip">{{msg5}}</div>
-        </wired-card>
-        <wired-card fill="#FFA07A" elevation="3" class="diary6">
-            <div align="center" style="text-overflow: clip">{{msg6}}</div>
-        </wired-card>
-        <wired-card fill="#A9A9A9" elevation="3" class="diary7">
-            <div align="center" style="text-overflow: clip">{{msg7}}</div>
-        </wired-card>
-        <wired-card fill="#B0C4DE" elevation="3" class="diary8">
-            <div align="center" style="text-overflow: clip">{{msg8}}</div>
+        <waterfall v-if="isGet" id="diaryWaterFall" :line-gap="230" :watch="diaries">
+            <!-- each component is wrapped by a waterfall slot -->
+            <waterfall-slot
+                    v-for="(item, index) in shows"
+                    :width="200"
+                    :height="item.height"
+                    :order="index"
+                    :key="item.id"
+            >
+                <wired-card class="lateDiaryCard" @click="toDiaryDetail(index)" :fill="item.color">
+                    <div class="lateDiary" :style="{height:item.height+'px'}">
+                        <wired-card class="diaryTime">{{item.releaseTime}}</wired-card>
+                        <div class="diaryText">{{item.text}}</div>
+                    </div>
+                </wired-card>
+            </waterfall-slot>
+        </waterfall>
+        <wired-button v-if="isGet" @click="getPagingDiaries">加载更多</wired-button>
+        <wired-card v-if="!isGet" fill="#FFB6C1">
+            快去写第一篇日记吧
         </wired-card>
     </div>
-
     <!--存储日历的box-->
 </template>
 
 <script>
+    import Waterfall from 'vue-waterfall/lib/waterfall'
+    import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+    import PagingDiaries from '../../../graphql/diarysend/PagingDiaries.graphql'
+    import {getToken} from "../../../utils/token"
+
+
     export default {
         name: "DiaryList",
+        components: {
+            Waterfall,
+            WaterfallSlot
+        },
         data() {
             return {
-                msg1: '死生契阔，与子相悦。执子之手，与子偕老',
-                msg2: '落红不是无情物，化作春泥更护花',
-                msg3: '昔闻洞庭水，今上岳阳楼。吴楚东南坼，乾坤日夜浮。 亲朋无一字，老病有孤舟。 戎马关山北，凭轩涕泗流。',
-                msg4: '风急天高猿啸哀，渚清沙白鸟飞回。',
-                msg6: '少无适俗韵，性本爱丘山。误落尘网中，一去三十年。羁鸟恋旧林，池鱼思故渊。开荒南野际，守拙归园田。方宅十余亩，' +
-                    '草屋八九间。榆柳荫后檐，桃李罗堂前。暧暧远人村，依依墟里烟。',
-                msg5: '春花秋月何时了？往事知多少。小楼昨夜又东风，故国不堪回首月明中。',
-                msg7: '锦瑟无端五十弦，一弦一柱思华年。庄生晓梦迷蝴蝶，望帝春心托杜鹃。沧海月明珠有泪，蓝田日暖玉生烟。此情可待成追忆，' +
-                    '只是当时已惘然。',
-                msg8: '大江东去，浪淘尽，千古风流人物。故垒西边，人道是，三国周郎赤壁。乱石穿空，惊涛拍岸，卷起千堆雪。'
+                colors: ['#FFB6C1', '#6495ED', '#7FFFAA', '#ba55d3', '#FAFAD2',
+                    '#FFA07A', '#A9A9A9', '#B0C4DE', '#c3f0ca', '#ffd803'],
+                diaries: [],
+                shows: [],
+                before: null,
+                last: 16,
+                hasPreviousPage: true,
+                startCursor: null,
+                isGet: false
             }
+        },
+        created() {
+            this.getPagingDiaries()
+        },
+        mounted() {
+            document.querySelector('.box').addEventListener('scroll', this.handleScroll, true)
+        },
+        methods: {
+            getShow: function (index) {
+                const re1 = new RegExp("<.+?>", "g");
+                let diary = this.diaries[index].node.content
+                const simpleText = diary.replace(re1, '')
+                let state = simpleText.length / 10 + 1
+                if (state > 4) {
+                    state = 4
+                }
+                state = Math.ceil(Math.random() * state)
+                let result = {height: null}
+                if (state === 1) {
+                    result.height = 125
+                } else {
+                    result.height = 75 * state
+                }
+                result.text = simpleText.substring(0, 10 * state)
+                result.color = this.colors[Math.floor(Math.random() * this.colors.length)]
+                result.releaseTime = this.diaries[index].node.releaseTime.substring(0, 10)
+                return result;
+            },
+            setShows: function () {
+                this.shows = []
+                for (let i = 0; i < this.diaries.length; i++) {
+                    this.shows = this.shows.concat(this.getShow(i))
+                }
+            },
+            async getPagingDiaries() {
+                if (!await getToken()) {
+                    return
+                }
+                if (!this.hasPreviousPage) {
+                    return
+                }
+                this.$apollo
+                    .mutate({
+                        mutation: PagingDiaries,
+                        variables: {
+                            before: this.startCursor,
+                            last: this.last
+                        }
+                    })
+                    .then(result => {
+                        this.diaries = this.diaries.concat(result.data.user.diaries.edges)
+                        this.setShows()
+                        this.isGet = true
+                        this.hasPreviousPage = result.data.user.diaries.pageInfo.hasPreviousPage
+                        this.startCursor = result.data.user.diaries.pageInfo.startCursor
+                        if (this.diaries.length === 0) {
+                            this.isGet = false
+                        }
+                    })
+                    .catch((error) => {
+                        this.isGet = false
+                        console.log('获取日记失败：' + error.message)
+                    })
+            },
+            toDiaryDetail: function (index) {
+                let diary = this.diaries[index].node
+                this.$router.push({
+                    name: 'diary', params: {
+                        releaseTime: diary.releaseTime,
+                        updateTime: diary.updateTime,
+                        content: diary.content,
+                        title: diary.title
+                    }
+                })
+            },
+            handleScroll() {
+                // TODO 滚动条检测待完成，暂时用按钮替代
+                let el = document.querySelector('.box')
+                let scrollTop = el.scrollTop
+                let scrollHeight = el.scrollHeight
+                let clientHeight = el.clientHeight
+                // console.log('scrollTop:' + scrollTop)
+                // console.log('scrollHeight' + scrollHeight)
+                // console.log('clientHeight' + clientHeight)
+                // console.log('offectTop' + el.offsetTop)
+                if (scrollTop + clientHeight === scrollHeight) {
+                    console.log("距顶部" + scrollTop + "可视区高度" + clientHeight + "滚动条总高度" + scrollHeight)
+                    alert("距顶部" + scrollTop + "可视区高度" + clientHeight + "滚动条总高度" + scrollHeight)
+                    alert('滚动完毕')
+                }
+            },
         }
+
     }
 </script>
 
 <style scoped>
-    wired-card.diary1 {
-        position: absolute;
-        height: 40%;
-        margin-top: 1%;
-        width: 13%;
-        margin-left: 0;
-        border: 0;
+    .box {
+        overflow: scroll;
+        overflow-x: hidden;
+        height: 100px;
+        align-items: center;
     }
 
-    wired-card.diary2 {
-        position: absolute;
-        height: 55%;
-        margin-top: 25%;
-        width: 13%;
-        margin-left: 0;
-        border: 0;
+    .lateDiaryCard {
+        width: 200px;
     }
 
-    wired-card.diary3 {
-        position: absolute;
-        height: 60%;
-        margin-top: 1%;
-        width: 13%;
-        margin-left: 17%;
-        border: 0;
+    .diaryTime {
+        position: relative;
+        margin-right: 20px;
     }
 
-    wired-card.diary4 {
-        position: absolute;
-        height: 34%;
-        margin-top: 36%;
-        width: 13%;
-        margin-left: 17%;
-        border: 0;
+    ::-webkit-scrollbar {
+        width: 1px;
     }
 
-    wired-card.diary5 {
-        position: absolute;
-        height: 25%;
-        margin-top: 1%;
-        width: 13%;
-        margin-left: 34%;
-        border: 0;
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.2);
     }
 
-    wired-card.diary6 {
-        position: absolute;
-        height: 67%;
-        margin-top: 18%;
-        width: 13%;
-        margin-left: 34%;
-        border: 0;
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 0;
+        background: rgba(0, 0, 0, 0.1);
     }
 
-    wired-card.diary7 {
-        position: absolute;
-        height: 43%;
-        margin-top: 1%;
-        width: 13%;
-        margin-left: 51%;
-        border: 0;
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.1);
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
     }
 
-    wired-card.diary8 {
-        position: absolute;
-        height: 50%;
-        margin-top: 27%;
-        width: 13%;
-        margin-left: 51%;
-        border: 0;
+    ::-webkit-scrollbar-thumb:window-inactive {
+        background: rgba(255, 0, 0, 0.4);
     }
+
 </style>

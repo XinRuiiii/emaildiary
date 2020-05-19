@@ -1,0 +1,12 @@
+query SpecificDiaries($releaseYear: Int, $releaseMonth: Int, $releaseDay: Int) {
+  # 查看某年 / 某月 / 某日的日记
+  specificDiaries(releaseYear: $releaseYear,
+    releaseMonth: $releaseMonth,
+    releaseDay: $releaseDay) {
+    id
+    title
+    content
+    releaseTime
+    updateTime
+  }
+}

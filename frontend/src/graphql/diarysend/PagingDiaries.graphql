@@ -1,0 +1,28 @@
+query User($last: Int, $before: String) {
+  # 分页查看日记，每页 16 条数据
+  # 如果 last 和 befor 参数为空，则查看所有日记
+
+  # 第一次查询时，before 为空，获取最新 16 篇，如果 hasPreviousPage 为 true，进行下一次查询
+  # 第二次查询时，before 传入上一次的 startCursor，获取下一批
+  # 如果 hasPreviousPage 为 true，进行下一次查询...
+
+  user {
+    diaries(last: $last, before: $before) {
+      pageInfo {
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      edges {
+        node {
+          id
+          title
+          content
+          releaseTime
+          updateTime
+        }
+        cursor
+      }
+    }
+  }
+}

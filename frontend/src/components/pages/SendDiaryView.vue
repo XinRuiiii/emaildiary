@@ -1,66 +1,51 @@
 <template>
-    <div id="diary" :style="{ width: screenWidth * 0.8 + 'px', height: screenHeight + 'px'}">
-        <wired-button id="btnBack">返回主页</wired-button>
-        <!--        暂时添加login登录-->
-        <wired-button @click="login">登录</wired-button>
-        <!--        暂时添加login登录-->
-        <wired-input id="diaryTitleInput" :value="diaryTitle" @input="diaryTitle=$event.target.value"
-                     placeholder="日记标题" elevation="2"/>
-        <wired-textArea id="diaryTextArea" :value="diaryText" @input="diaryText=$event.target.value"
-                        placeholder="记录下你的一天吧" rows="10" elevation="5"/>
-        <wired-button id="btnSave" @click="saveDraft" elevation="3">保存</wired-button>
+    <div id="diary" :style="{ width: screenWidth  + 'px', height: screenHeight + 'px'}">
+        <time-card id="timeCard"></time-card>
+        <div id="diaryTextArea">
+            <DiaryEditor :diary-text.sync="diaryText"
+                         :diary-title.sync="diaryTitle"
+                         :editor-width="screenWidth*0.8">
+            </DiaryEditor>
+        </div>
         <wired-button id="btnSend" @click="sendDiary" elevation="3">发送</wired-button>
     </div>
 </template>
 <script>
-    import SendDiary from '../../graphql/diarysend/SendDiary.graphql'
-    import Login from '../../graphql/diarysend/Login.graphql'
-
-
-    let screenHeight = document.documentElement.clientHeight;
-    let screenWidth = document.documentElement.clientWidth;
-
+    import SendDiary from '../../graphql/diarysend/CreateDiary.graphql'
+    import DiaryEditor from "../DiaryComponents/DiaryEditor"
+    import TimeCard from "../DiaryComponents/TimeCard"
+    import {getToken} from "../../utils/token"
 
     export default {
         name: 'SendView',
-        // 在 `methods` 对象中定义方法
+        components: {TimeCard, DiaryEditor},
         data() {
             return {
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
+                screenWidth: document.documentElement.clientWidth,
+                screenHeight: document.documentElement.clientHeight,
                 diaryTitle: '',
-                diaryText: '',
-                // TODO 开发时暂时使用，后续修改
-                email: '2017302580071@whu.edu.cn',
-                password: '34556789'
+                diaryText: ''
+            }
+        },
+        created() {
+            getToken()
+        },
+        mounted() {
+            window.onresize = () => {
+                return (() => {
+                    window.screenWidth = document.documentElement.clientWidth
+                    window.screenHeight = document.documentElement.clientHeight
+                    this.screenHeight = document.documentElement.clientHeight
+                    this.screenWidth = window.screenWidth
+                })()
             }
         },
         methods: {
-            //实现简单的登录
-            login() {
-                this.$apollo
-                    .mutate({
-                        mutation: Login,
-                        variables: {
-                            email: this.email,
-                            password: this.password
-                        },
-                    })
-                    .then(result => {
-                        window.localStorage['token'] = result.data.tokenAuth.token;
-                        alert('登录成功，token已保存。');
-                    })
-                    .catch((error) => {
-                        alert('登录失败。');
-                        console.log(error.message);
-                    });
-            },
-            // TODO 保存草稿
-            saveDraft: function () {
-                alert('功能待完成');
-            },
             // 发送日记
-            sendDiary: function () {
+            async sendDiary() {
+                if (!await getToken()) {
+                    return
+                }
                 this.$apollo
                     .mutate({
                         mutation: SendDiary,
@@ -69,13 +54,17 @@
                             diaryText: this.diaryText
                         }
                     })
-                    .then(() => {
-                        console.log('日记发送成功，跳转到主页');
-                        this.$router.push({path: '/'});
+                    .then(result => {
+                        if (result.data.createDiary.success) {
+                            alert('日记发送成功');
+                            this.$router.push({name: 'index'})
+                        } else {
+                            alert('日记发送失败,请尝试重新发送')
+                        }
                     })
                     .catch((error) => {
-                        alert('日记发送失败');
-                        console.log('日记发送失败：' + error.message);
+                        alert('发送日记失败')
+                        console.log('发送日记失败：' + error.message)
                     })
             }
         }
@@ -87,34 +76,22 @@
 <style scoped>
 
     #diary {
-        font-family: naughty-lite-2, serif;
+        /*font-family: naughty-lite-2, serif;*/
+        /*margin-left: 10%;*/
     }
 
-    #btnBack {
+    #timeCard {
         margin-left: 10%;
-    }
-
-    #diaryTitleInput {
-        width: 100%;
-        margin-left: 10%;
-        margin-top: calc(5vh);
+        margin-top: 5%;
     }
 
     #diaryTextArea {
-        width: 100%;
         margin-left: 10%;
-        margin-top: calc(5vh);
-    }
-
-    #btnSave {
-        float: right;
-        display: block;
-        margin-top: 5%;
+        margin-top: 3%;
     }
 
     #btnSend {
-        float: right;
-        display: block;
-        margin-top: 5%;
+        margin-left: 10%;
+        margin-top: 2%;
     }
 </style>

@@ -1,0 +1,5 @@
+mutation UpdateDiary($releaseTime: DateTime!, $title: String, $content: String) {
+  updateDiary (releaseTime: $releaseTime, title: $title, content: $content) {
+    success
+  }
+}

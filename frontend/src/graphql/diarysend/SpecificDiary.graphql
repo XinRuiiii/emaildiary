@@ -1,0 +1,14 @@
+query User($releaseTime: DateTime!) {
+  user {
+    diaries(releaseTime: $releaseTime) {
+      edges {
+        node {
+          title
+          content
+          releaseTime
+          updateTime
+        }
+      }
+    }
+  }
+}
