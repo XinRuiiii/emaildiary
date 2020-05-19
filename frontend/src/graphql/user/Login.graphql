@@ -1,4 +1,6 @@
-mutation TokenAuth($email: String!,$password: String!) {
+mutation TokenAuth($email: String!, $password: String!) {
+    # 相当于登录的第一步，获取 JWT Token
+    # 第二步是 User
     tokenAuth(email: $email, password: $password) {
         payload
         token
@@ -6,3 +8,4 @@ mutation TokenAuth($email: String!,$password: String!) {
         refreshExpiresIn
     }
 }
+
