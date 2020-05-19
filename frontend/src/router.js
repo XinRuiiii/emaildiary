@@ -4,6 +4,8 @@ import Vue from 'vue'
 import sendDiaryView from './components/pages/SendDiaryView'
 import EditTest from "./components/pages/EditTest"
 import SignInOrUp from "./components/pages/SignInOrUp";
+import UserSet from "./components/pages/UserSet";
+
 
 Vue.use(Router);
 
@@ -31,5 +33,11 @@ export default new Router({
             name: 'signIn',
             component: SignInOrUp
         },
+        {
+            path: '/set',
+            name: 'set',
+            component: UserSet
+        },
+
     ]
 })
