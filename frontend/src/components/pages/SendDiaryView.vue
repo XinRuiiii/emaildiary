@@ -1,13 +1,20 @@
 <template>
-    <div id="diary" :style="{ width: screenWidth  + 'px', height: screenHeight + 'px'}">
-        <time-card id="timeCard"></time-card>
-        <div id="diaryTextArea">
-            <DiaryEditor :diary-text.sync="diaryText"
-                         :diary-title.sync="diaryTitle"
-                         :editor-width="screenWidth*0.8">
-            </DiaryEditor>
-        </div>
-        <wired-button id="btnSend" @click="sendDiary" elevation="3">发送</wired-button>
+    <div id="diary">
+        <wired-card class="frame" elevation="4" fill="#fef6e4">
+            <div class="page">
+                <div class="editorHeader">
+                    <time-card id="timeCard"></time-card>
+                    <wired-button id="btnSend" @click="sendDiary" elevation="3">保存</wired-button>
+                </div>
+                <div id="diaryTextArea">
+                    <DiaryEditor :diary-text.sync="diaryText"
+                                 :diary-title.sync="diaryTitle"
+                                 :editor-width="screenWidth*0.8"
+                                 :editor-height="screenHeight*0.5">
+                    </DiaryEditor>
+                </div>
+            </div>
+        </wired-card>
     </div>
 </template>
 <script>
@@ -33,7 +40,7 @@
         mounted() {
             window.onresize = () => {
                 return (() => {
-                    window.screenWidth = document.documentElement.clientWidth
+                    window.screenWidth = document.body.clientWidth
                     window.screenHeight = document.documentElement.clientHeight
                     this.screenHeight = document.documentElement.clientHeight
                     this.screenWidth = window.screenWidth
@@ -76,22 +83,29 @@
 <style scoped>
 
     #diary {
-        /*font-family: naughty-lite-2, serif;*/
-        /*margin-left: 10%;*/
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    #timeCard {
-        margin-left: 10%;
-        margin-top: 5%;
+    .frame {
+        z-index: 0;
+        padding: 3% 5% 3% 5%;
+    }
+
+    .editorHeader {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
     }
 
     #diaryTextArea {
-        margin-left: 10%;
-        margin-top: 3%;
+        margin-top: 2%;
+        align-items: center;
     }
 
     #btnSend {
-        margin-left: 10%;
+        margin-left: 8%;
         margin-top: 2%;
     }
 </style>

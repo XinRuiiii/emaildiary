@@ -1,6 +1,6 @@
 <template>
     <div class ="time">
-        <wired-card fill="#c3f0ca">{{date}}</wired-card>
+        <wired-card fill="#f582ae">{{date}}</wired-card>
     </div>
 </template>
 
@@ -31,5 +31,7 @@
 </script>
 
 <style scoped>
-
+    .time{
+        font-size: 40px;
+    }
 </style>

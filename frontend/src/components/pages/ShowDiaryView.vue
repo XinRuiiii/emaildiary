@@ -1,39 +1,51 @@
 <template>
-    <div id="showDiary" :style="{ width: screenWidth * 0.8 + 'px', height: screenHeight + 'px'}">
-        <div class="getDiaryBox">
-            <month-select :year.sync="year"
-                          :month.sync="month">
-            </month-select>
-            <wired-button id="btnGet" @click="getDiaries" elevation="3">获取日记</wired-button>
-        </div>
-        <wired-card fill="#f3d2c1">本月共有{{diaries.length}}篇日记</wired-card>
-        <div v-if="isGet&!isEdit">
-            <wired-button id="btnNext" @click="getLastDiary" elevation="4">上一篇</wired-button>
-            <wired-button id="btnNext" @click="getNextDiary" elevation="4">下一篇</wired-button>
-        </div>
-        <div v-if=isGet>
-            <wired-card id="diaryReleaseTime">发布时间：{{diaries[currentDiaryIndex].releaseTime.split('.')[0]}}</wired-card>
-            <wired-card id="diaryUpdateTime">修改时间：{{diaries[currentDiaryIndex].updateTime.split('.')[0]}}</wired-card>
-            <div id="staticDiary" v-if=!isEdit>
+    <div id="showDiary">
+        <wired-card class="diaryCard" fill="#fef6e4">
+            <div class="getDiaryBox">
+                <month-select :year.sync="year"
+                              :month.sync="month">
+                </month-select>
+                <wired-button id="btnGet" @click="getDiaries" elevation="3">获取日记</wired-button>
+            </div>
+            <div class="diaryStatistics" v-if="isGet&!isEdit">
+                <wired-card fill="#f3d2c1">本月共有{{diaries.length}}篇日记</wired-card>
+                <wired-button id="btnNext" @click="getLastDiary" elevation="2">上一篇</wired-button>
+                <wired-button id="btnNext" @click="getNextDiary" elevation="2">下一篇</wired-button>
+            </div>
+            <wired-card v-if=isGet>
                 <div>
-                    <wired-card id="diaryTitle">标题： {{diaries[currentDiaryIndex].title}}</wired-card>
-                    <wired-button id="btnEdit" @click="isEdit=true">编辑日记</wired-button>
-                    <wired-card id="diaryText" v-html="diaries[currentDiaryIndex].content"
-                                :style="{ width: screenWidth * 0.8 + 'px'}" :width="screenWidth">
-                    </wired-card>
+                    <div id="staticDiary" v-if=!isEdit>
+                        <wired-card id="diaryTitle" fill="#fef6e4">{{diaries[currentDiaryIndex].title}}</wired-card>
+                        <wired-fab class='btnFab' @click="isEdit=true">
+                            <font-awesome-icon icon="pencil-alt"/>
+                        </wired-fab>
+                        <wired-fab class="btnFab" @click="deleteDiary">
+                            <font-awesome-icon icon="trash-alt"/>
+                        </wired-fab>
+                        <div class="diaryTime">
+                            <label class="diaryReleaseTime">发布：{{diaries[currentDiaryIndex].releaseTime.split('.')[0]}}
+                            </label>
+                            <label class="diaryUpdateTime">修改：{{diaries[currentDiaryIndex].updateTime.split('.')[0]}}
+                            </label>
+                        </div>
+                        <wired-card id="diaryText" v-html="diaries[currentDiaryIndex].content"
+                                    fill="#f3d2c1"
+                                    :style="{ width: screenWidth * 0.8 + 'px'}" :width="screenWidth">
+                        </wired-card>
+                    </div>
+                    <div id="editDiary" v-if=isEdit>
+                        <wired-fab class="btnFab" @click="getDiaries">
+                            <font-awesome-icon icon="undo-alt"/>
+                        </wired-fab>
+                        <wired-button id="btnUpdateDiary" @click="updateDiary">更新</wired-button>
+                        <DiaryEditor :diary-text.sync="diaries[currentDiaryIndex].content"
+                                     :diary-title.sync="diaries[currentDiaryIndex].title"
+                                     :editor-width="screenWidth*0.8">
+                        </DiaryEditor>
+                    </div>
                 </div>
-            </div>
-            <div id="editDiary" v-if=isEdit>
-                <wired-button @click="getDiaries">取消编辑</wired-button>
-                <DiaryEditor :diary-text.sync="diaries[currentDiaryIndex].content"
-                             :diary-title.sync="diaries[currentDiaryIndex].title"
-                             :editor-width="screenWidth*0.8">
-                </DiaryEditor>
-                <wired-button id="btnUpdateDiary" @click="updateDiary">更新日记</wired-button>
-            </div>
-            <wired-button id="btnDeleteDiary" @click="deleteDiary" elevation="3">删除日记</wired-button>
-        </div>
-
+            </wired-card>
+        </wired-card>
     </div>
 </template>
 
@@ -44,6 +56,10 @@
     import UpdateDiary from '../../graphql/diarysend/UpdateDiary.graphql'
     import MonthSelect from "../DiaryComponents/MonthSelect"
     import {getToken} from "../../utils/token"
+    import {library} from '@fortawesome/fontawesome-svg-core'
+    import {faPencilAlt, faTrashAlt, faUndoAlt} from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faPencilAlt, faTrashAlt, faUndoAlt)
 
     export default {
         name: "ShowDiaryView",
@@ -175,12 +191,62 @@
 
 <style scoped>
     #showDiary {
-        margin-left: 10%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 5% 0 5%;
+    }
+
+    .diaryCard{
+        padding: 2% 5% 2% 5%;
+
     }
 
     .getDiaryBox {
         display: flex;
         flex-direction: row;
-        margin-top: 5%;
+        margin-top: 2%;
+        justify-content: space-between;
+    }
+
+    .diaryStatistics {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    #staticDiary {
+        align-content: center;
+    }
+
+    #diaryTitle {
+        font-weight: bold;
+        font-size: 30px;
+    }
+
+    #diaryText {
+        font-size: 20px;
+    }
+
+    .diaryTime {
+        display: flow;
+        float: right;
+    }
+
+    .diaryReleaseTime {
+        font-size: 15px;
+    }
+
+    .diaryUpdateTime {
+        font-size: 15px;
+    }
+
+    #btnUpdateDiary {
+        margin-left: 5%;
+    }
+
+    .btnFab {
+        --wired-fab-bg-color: #f582ae;
+        margin-left: 3%;
     }
 </style>

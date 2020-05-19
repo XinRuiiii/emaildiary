@@ -9,9 +9,6 @@
             <wired-button @click="getNextYear">
                 <font-awesome-icon icon="caret-right"/>
             </wired-button>
-            <!--        <wired-combo id="yearSelect" @selected="getYear">-->
-            <!--            <wired-item v-for="(item, index) in years" :key="index" :value="item">{{item}}</wired-item>-->
-            <!--        </wired-combo>-->
         </div>
         <div id="monthSelectBox">
             <wired-card fill="#8bd3dd">月份</wired-card>
@@ -22,11 +19,7 @@
             <wired-button @click="getNextMonth">
                 <font-awesome-icon icon="caret-right"/>
             </wired-button>
-<!--            <wired-combo id="monthSelect" @selected="getMonth">-->
-<!--                <wired-item v-for="(item, index) in months" :key="index" :value="item">{{item}}月</wired-item>-->
-<!--            </wired-combo>-->
         </div>
-
     </div>
 </template>
 
@@ -105,7 +98,7 @@
     #dateSelect{
         display: flex;
         flex-direction: row;
-        justify-content: flex-start;
+        justify-content: space-between;
     }
     #yearSelectBox{
 

@@ -1,17 +1,18 @@
 <template>
-    <div>
+    <div class="diary">
         <wired-input id="diaryTitleInput" :value="editingDiaryTitle"
                      @input="editingDiaryTitle=$event.target.value"
                      @change="onEditorChange($event)"
                      placeholder="日记标题" elevation="2"
                      :style="{width:editorWidth+'px'}"/>
-        <wired-card id="diaryTextInput">
-            <div :style="{width:editorWidth+'px'}">
+        <wired-card id="diaryTextInput" fill="#f3d2c1">
+            <div :style="{height:editorHeight+'px'}">
                 <quill-editor id="diaryContent"
                               v-model="editingDiaryText"
                               ref="myQuillEditor"
                               :options="editorOption"
-                              @change="onEditorChange($event)">
+                              @change="onEditorChange($event)"
+                              :style="{width:editorWidth+'px',height:editorHeight*0.8+'px'}">
                 </quill-editor>
             </div>
         </wired-card>
@@ -32,10 +33,12 @@
         props: [
             'diaryTitle',
             'diaryText',
-            'editorWidth'
+            'editorWidth',
+            'editorHeight'
         ],
         data() {
             return {
+
                 editingDiaryTitle: this.diaryTitle,
                 editingDiaryText: this.diaryText,
                 editorOption: {
@@ -69,7 +72,14 @@
 </script>
 
 <style scoped>
+    .diary {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     #diaryTextInput {
         margin-top: 2%;
     }
+
 </style>

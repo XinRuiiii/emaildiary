@@ -20,7 +20,9 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 })
 
 const httpLink = new HttpLink({
-    uri: 'http://emaildiary.net:8000/graphql',
+    // uri: 'http://emaildiary.net:8000/graphql',
+    uri: 'http://118.25.251.20:8000/graphql',
+
 });
 
 const apolloClient = new ApolloClient({
