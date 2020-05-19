@@ -1,5 +1,10 @@
 <template>
     <div>
+        <!--        跳转去设置页面-->
+            <wired-button id="setBtn" v-on:click="$router.push('/set')">资料设置</wired-button>
+        <!--        跳转去设置页面结束-->
+
+      
         <div>
             <router-link to="/sendDiary">
                 <wired-fab class="CreateDiaryButton">
@@ -17,8 +22,11 @@
             <index-diary id="indexDiary"></index-diary>
             <router-link to="/signIn">
                 <index-avatar></index-avatar>
-            </router-link>
+            <!--            跳转到登录/登出/注册/注销页面-->
+
+            <!--            日历-->
             <!--            <index-calendar></index-calendar>-->
+            <!--            选择心情的列表-->
             <index-spirit></index-spirit>
         </div>
 
@@ -66,6 +74,10 @@
         margin-top: 1%;
         --wired-fab-bg-color: pink;
     }
+
+    #setBtn {
+        position: absolute;
+        margin-left: 200px;
 
     .btnShowDiary{
         position: absolute;
