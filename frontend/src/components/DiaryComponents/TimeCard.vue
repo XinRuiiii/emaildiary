@@ -1,37 +1,37 @@
 <template>
-    <div class ="time">
+    <!--    显示时间的卡片-->
+    <div class="time">
         <wired-card fill="#f582ae">{{date}}</wired-card>
     </div>
 </template>
 
 <script>
     export default {
-        data:function(){
-            return{
+        data: function () {
+            return {
                 date: new Date(),
             };
         },
-        created(){
+        created() {
         },
-        mounted(){
+        mounted() {
             let _this = this;
-            this.timer = setInterval(function(){
+            this.timer = setInterval(function () {
                 _this.date = new Date().toLocaleString();
             });
         },
-        beforeDestroy:function(){
-            if(this.timer){
+        beforeDestroy: function () {
+            if (this.timer) {
                 clearInterval(this.timer);
             }
         },
-        methods:{
-        }
+        methods: {}
     }
 
 </script>
 
 <style scoped>
-    .time{
+    .time {
         font-size: 40px;
     }
 </style>

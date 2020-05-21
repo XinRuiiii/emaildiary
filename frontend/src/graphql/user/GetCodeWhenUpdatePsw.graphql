@@ -1,0 +1,5 @@
+mutation GetCodeWhenUpdatePassword{
+    getCodeWhenUpdatePassword {
+        success
+    }
+}

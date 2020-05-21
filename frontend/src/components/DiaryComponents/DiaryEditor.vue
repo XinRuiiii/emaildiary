@@ -1,10 +1,12 @@
 <template>
     <div class="diary">
+        <!--        日记标题编辑-->
         <wired-input id="diaryTitleInput" :value="editingDiaryTitle"
                      @input="editingDiaryTitle=$event.target.value"
                      @change="onEditorChange($event)"
                      placeholder="日记标题" elevation="2"
                      :style="{width:editorWidth+'px'}"/>
+        <!--        日记内容编辑-->
         <wired-card id="diaryTextInput" fill="#f3d2c1">
             <div :style="{height:editorHeight+'px'}">
                 <quill-editor id="diaryContent"
@@ -38,7 +40,6 @@
         ],
         data() {
             return {
-
                 editingDiaryTitle: this.diaryTitle,
                 editingDiaryText: this.diaryText,
                 editorOption: {

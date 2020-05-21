@@ -1,35 +1,44 @@
 <template>
-    <div>
-        <!--        跳转去设置页面-->
-            <wired-button id="setBtn" v-on:click="$router.push('/set')">资料设置</wired-button>
-        <!--        跳转去设置页面结束-->
-
-      
-        <div>
-            <router-link to="/sendDiary">
-                <wired-fab class="CreateDiaryButton">
-                    <font-awesome-icon icon="pencil-alt"/>
-                </wired-fab>
-            </router-link>
-            <router-link to="/showDiary" class="btnShowDiary"> <wired-fab>
-                <font-awesome-icon icon="shower"/>
-            </wired-fab>
-            </router-link>
-        </div>
-        <div class="box">
-            <!--        网页的边框-->
-            <wired-card class="frame" elevation="5"/>
-            <index-diary id="indexDiary"></index-diary>
-            <router-link to="/signIn">
-                <index-avatar></index-avatar>
-            <!--            跳转到登录/登出/注册/注销页面-->
-
-            <!--            日历-->
-            <!--            <index-calendar></index-calendar>-->
-            <!--            选择心情的列表-->
-            <index-spirit></index-spirit>
-        </div>
-
+    <div class="index">
+        <wired-card class="frame" fill="#fef6e4">
+            <div class="frameContent">
+                <!--        跳转标签-->
+                <div class="header">
+                    <!--        设置页面-->
+                    <router-link to="/set">
+                        <wired-fab class="btnFab">
+                            <font-awesome-icon icon="cog"/>
+                        </wired-fab>
+                    </router-link>
+                    <!--     日记编辑界面-->
+                    <router-link to="/sendDiary">
+                        <wired-fab class="btnFab btnFabMarginLeft">
+                            <font-awesome-icon icon="pencil-alt"/>
+                        </wired-fab>
+                    </router-link>
+                    <!--       日记本界面-->
+                    <router-link to="/showDiary">
+                        <wired-fab class="btnFab btnFabMarginLeft">
+                            <font-awesome-icon icon="book"/>
+                        </wired-fab>
+                    </router-link>
+                    <!--登录注册界面-->
+                    <router-link to="/signIn">
+                        <img src="../../assets/images/logo.png" class="logo">
+                    </router-link>
+                    <!--            退出登录界面-->
+                    <index-avatar class="btnLogin"></index-avatar>
+                </div>
+                <div class="box">
+                    <!--                    日记列表-->
+                    <index-diary id="indexDiary"/>
+                    <div class="indexRight">
+                        <index-calendar></index-calendar>
+                        <index-spirit class="emotionBox"></index-spirit>
+                    </div>
+                </div>
+            </div>
+        </wired-card>
     </div>
 </template>
 
@@ -38,9 +47,10 @@
     import Avatar from "./IndexComponents/Avatar"
     import SpiritList from "./IndexComponents/SpiritList"
     import {library} from '@fortawesome/fontawesome-svg-core'
-    import {faPencilAlt,faShower} from '@fortawesome/free-solid-svg-icons'
+    import {faPencilAlt, faBook, faCog, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
+    import Calendar from "./IndexComponents/Calendar";
 
-    library.add(faPencilAlt,faShower)
+    library.add(faPencilAlt, faBook, faCog, faSignOutAlt)
 
 
     export default {
@@ -48,53 +58,54 @@
         components: {
             'index-diary': DiaryList,
             'index-avatar': Avatar,
-            'index-spirit': SpiritList
+            'index-spirit': SpiritList,
+            'index-calendar': Calendar
         }
-
     }
 </script>
 
 <style scoped>
 
-    .box {
-        position: absolute;
-        height: 80%;
-        width: 90%;
-        padding: 0;
-        margin-top: 5%;
-        margin-left: 5%;
+    .index {
+        padding: 0 5% 0 5%;
         border: 0;
     }
 
-    .CreateDiaryButton {
-        position: absolute;
-        height: 90px;
-        width: 90px;
-        margin-left: 7%;
-        margin-top: 1%;
-        --wired-fab-bg-color: pink;
-    }
-
-    #setBtn {
-        position: absolute;
-        margin-left: 200px;
-
-    .btnShowDiary{
-        position: absolute;
-        margin-left: 15%;
-        margin-top: 1%;
-    }
-
     .frame {
-        position: absolute;
         height: 100%;
         width: 100%;
-        padding: 0;
         margin: 0;
         z-index: 0;
+        padding: 2% 2% 2% 2%;
+    }
+
+    .btnFab {
+        --wired-fab-bg-color: #f582ae;
+    }
+
+    .btnFabMarginLeft {
+        margin-left: 3%;
+    }
+
+    .logo {
+        height: 50px;
+        margin-left: 50%;
     }
 
     #indexDiary {
         width: 65%;
+        display: inline-block;
     }
+
+    .indexRight {
+        display: inline-block;
+        width: 30%;
+        height: 50%;
+    }
+
+    .btnLogin {
+        display: inline-block;
+        float: right;
+    }
+
 </style>

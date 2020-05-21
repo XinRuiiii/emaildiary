@@ -1,50 +1,64 @@
 <template>
     <div id="showDiary">
         <wired-card class="diaryCard" fill="#fef6e4">
-            <div class="getDiaryBox">
-                <month-select :year.sync="year"
-                              :month.sync="month">
-                </month-select>
-                <wired-button id="btnGet" @click="getDiaries" elevation="3">获取日记</wired-button>
-            </div>
+            <!--            日记本统计数据-->
             <div class="diaryStatistics" v-if="isGet&!isEdit">
-                <wired-card fill="#f3d2c1">本月共有{{diaries.length}}篇日记</wired-card>
                 <wired-button id="btnNext" @click="getLastDiary" elevation="2">上一篇</wired-button>
+                <wired-card fill="#f3d2c1">本月共有{{diaries.length}}篇日记</wired-card>
                 <wired-button id="btnNext" @click="getNextDiary" elevation="2">下一篇</wired-button>
             </div>
             <wired-card v-if=isGet>
                 <div>
+                    <!--                    显示日记-->
                     <div id="staticDiary" v-if=!isEdit>
-                        <wired-card id="diaryTitle" fill="#fef6e4">{{diaries[currentDiaryIndex].title}}</wired-card>
-                        <wired-fab class='btnFab' @click="isEdit=true">
-                            <font-awesome-icon icon="pencil-alt"/>
-                        </wired-fab>
-                        <wired-fab class="btnFab" @click="deleteDiary">
-                            <font-awesome-icon icon="trash-alt"/>
-                        </wired-fab>
+                        <div class="diaryTitleBox">
+                            <wired-card id="diaryTitle" fill="#fef6e4">{{diaries[currentDiaryIndex].title}}</wired-card>
+                            <wired-fab class="btnFabRight" @click="deleteDiary">
+                                <font-awesome-icon icon="trash-alt"/>
+                            </wired-fab>
+                            <wired-fab class='btnFabRight' @click="isEdit=true">
+                                <font-awesome-icon icon="pencil-alt"/>
+                            </wired-fab>
+                        </div>
+                        <wired-card id="diaryText" v-html="diaries[currentDiaryIndex].content"
+                                    fill="#f3d2c1"
+                                    :style="{ width: screenWidth * 0.8 + 'px'}" :width="screenWidth">
+                        </wired-card>
                         <div class="diaryTime">
                             <label class="diaryReleaseTime">发布：{{diaries[currentDiaryIndex].releaseTime.split('.')[0]}}
                             </label>
                             <label class="diaryUpdateTime">修改：{{diaries[currentDiaryIndex].updateTime.split('.')[0]}}
                             </label>
                         </div>
-                        <wired-card id="diaryText" v-html="diaries[currentDiaryIndex].content"
-                                    fill="#f3d2c1"
-                                    :style="{ width: screenWidth * 0.8 + 'px'}" :width="screenWidth">
-                        </wired-card>
                     </div>
+                    <!--                    编辑日记-->
                     <div id="editDiary" v-if=isEdit>
-                        <wired-fab class="btnFab" @click="getDiaries">
-                            <font-awesome-icon icon="undo-alt"/>
-                        </wired-fab>
-                        <wired-button id="btnUpdateDiary" @click="updateDiary">更新</wired-button>
-                        <DiaryEditor :diary-text.sync="diaries[currentDiaryIndex].content"
-                                     :diary-title.sync="diaries[currentDiaryIndex].title"
-                                     :editor-width="screenWidth*0.8">
-                        </DiaryEditor>
+                        <div>
+                            <wired-fab class="btnFabLeft" @click="getDiaries">
+                                <font-awesome-icon icon="undo-alt"/>
+                            </wired-fab>
+                            <wired-fab class="btnFabLeft" @click="updateDiary">
+                                <font-awesome-icon icon="save"/>
+                            </wired-fab>
+                        </div>
+                        <div>
+                            <DiaryEditor class="diaryEditor"
+                                         :diary-text.sync="diaries[currentDiaryIndex].content"
+                                         :diary-title.sync="diaries[currentDiaryIndex].title"
+                                         :editor-width="screenWidth*0.8">
+                            </DiaryEditor>
+                        </div>
                     </div>
                 </div>
             </wired-card>
+            <!--            选择年份和月份-->
+            <div class="getDiaryBox">
+                <month-select :year.sync="year"
+                              :month.sync="month"
+                              :select-width="screenWidth*0.6">
+                </month-select>
+                <wired-button id="btnGet" @click="getDiaries" elevation="3">获取</wired-button>
+            </div>
         </wired-card>
     </div>
 </template>
@@ -57,9 +71,9 @@
     import MonthSelect from "../DiaryComponents/MonthSelect"
     import {getToken} from "../../utils/token"
     import {library} from '@fortawesome/fontawesome-svg-core'
-    import {faPencilAlt, faTrashAlt, faUndoAlt} from '@fortawesome/free-solid-svg-icons'
+    import {faPencilAlt, faTrashAlt, faUndoAlt, faSave} from '@fortawesome/free-solid-svg-icons'
 
-    library.add(faPencilAlt, faTrashAlt, faUndoAlt)
+    library.add(faPencilAlt, faTrashAlt, faUndoAlt, faSave)
 
     export default {
         name: "ShowDiaryView",
@@ -101,7 +115,6 @@
                 if (!await getToken()) {
                     return
                 }
-                console.log('token鉴定完毕')
                 this.$apollo
                     .mutate({
                         mutation: SpecificDiaries,
@@ -111,7 +124,6 @@
                         }
                     })
                     .then(result => {
-                        console.log('获取日记成功')
                         this.diaries = result.data.specificDiaries
                         this.currentDiaryIndex = 0
                         if (this.diaries.length !== 0) {
@@ -197,7 +209,7 @@
         padding: 0 5% 0 5%;
     }
 
-    .diaryCard{
+    .diaryCard {
         padding: 2% 5% 2% 5%;
 
     }
@@ -206,7 +218,7 @@
         display: flex;
         flex-direction: row;
         margin-top: 2%;
-        justify-content: space-between;
+        justify-content: space-evenly;
     }
 
     .diaryStatistics {
@@ -241,12 +253,15 @@
         font-size: 15px;
     }
 
-    #btnUpdateDiary {
-        margin-left: 5%;
+    .btnFabRight {
+        --wired-fab-bg-color: #f582ae;
+        margin-left: 3%;
+        float: right;
     }
 
-    .btnFab {
+    .btnFabLeft {
         --wired-fab-bg-color: #f582ae;
         margin-left: 3%;
     }
+
 </style>

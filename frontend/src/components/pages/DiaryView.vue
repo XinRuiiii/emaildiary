@@ -2,37 +2,42 @@
     <div id="diary">
         <wired-card class="diaryCard" fill="#fef6e4">
             <div class="diaryBox" v-if="isGet">
+                <!--                显示日记-->
                 <div id="staticDiary" v-if=!isEdit>
-                    <div>
-                        <wired-card id="diaryTitle" fill="#fef6e4">{{diary.title}}</wired-card>
-                        <wired-fab class='btnFab' @click="isEdit=true">
-                            <font-awesome-icon icon="pencil-alt"/>
-                        </wired-fab>
-                        <wired-fab class="btnFab" @click="deleteDiary">
-                            <font-awesome-icon icon="trash-alt"/>
-                        </wired-fab>
-                        <div class="diaryTime">
-                            <label class="diaryReleaseTime">发布：{{diary.releaseTime.split('.')[0]}}
-                            </label>
-                            <label class="diaryUpdateTime">修改：{{diary.updateTime.split('.')[0]}}
-                            </label>
-                        </div>
-                        <wired-card id="diaryText" v-html="diary.content"
-                                    fill="#f3d2c1"
-                                    :style="{ width: screenWidth * 0.8 + 'px'}">
-                        </wired-card>
+                    <wired-card id="diaryTitle" fill="#fef6e4">{{diary.title}}</wired-card>
+                    <wired-fab class="btnFabRight" @click="deleteDiary">
+                        <font-awesome-icon icon="trash-alt"/>
+                    </wired-fab>
+                    <wired-fab class='btnFabRight' @click="isEdit=true">
+                        <font-awesome-icon icon="pencil-alt"/>
+                    </wired-fab>
+                    <wired-card id="diaryText" v-html="diary.content"
+                                fill="#f3d2c1"
+                                :style="{ width: screenWidth * 0.8 + 'px'}">
+                    </wired-card>
+                    <div class="diaryTime">
+                        <label class="diaryReleaseTime">发布：{{diary.releaseTime.split('.')[0]}}
+                        </label>
+                        <label class="diaryUpdateTime">修改：{{diary.updateTime.split('.')[0]}}
+                        </label>
                     </div>
                 </div>
+                <!--                编辑日记-->
                 <div id="editDiary" v-if=isEdit>
-                    <wired-fab class="btnFab" @click="getDiary">
-                        <font-awesome-icon icon="undo-alt"/>
-                    </wired-fab>
-                    <wired-button id="btnUpdateDiary" @click="updateDiary">更新日记</wired-button>
-                    <DiaryEditor :diary-text.sync="diary.content"
-                                 :diary-title.sync="diary.title"
-                                 :editor-width="screenWidth*0.8">
-                    </DiaryEditor>
-
+                    <div>
+                        <wired-fab class="btnFabLeft" @click="getDiary">
+                            <font-awesome-icon icon="undo-alt"/>
+                        </wired-fab>
+                        <wired-fab class="btnFabLeft" @click="updateDiary">
+                            <font-awesome-icon icon="save"/>
+                        </wired-fab>
+                    </div>
+                    <div>
+                        <DiaryEditor :diary-text.sync="diary.content"
+                                     :diary-title.sync="diary.title"
+                                     :editor-width="screenWidth*0.8">
+                        </DiaryEditor>
+                    </div>
                 </div>
             </div>
         </wired-card>
@@ -45,6 +50,10 @@
     import DiaryEditor from "../DiaryComponents/DiaryEditor"
     import SpecificDiary from "../../graphql/diarysend/SpecificDiary.graphql"
     import {getToken} from "../../utils/token"
+    import {library} from '@fortawesome/fontawesome-svg-core'
+    import {faTrashAlt, faUndoAlt, faSave} from '@fortawesome/free-solid-svg-icons'
+
+    library.add(faTrashAlt, faUndoAlt, faSave)
 
     export default {
         name: "DiaryDetailView",
@@ -102,7 +111,6 @@
                     .then(result => {
                         this.diary = result.data.user.diaries.edges[0].node
                         this.isEdit = false
-                        console.log(this.diary)
                     })
                     .catch((error) => {
                         alert('获取日记失败')
@@ -174,8 +182,8 @@
         padding: 2% 5% 2% 5%;
     }
 
-    .diaryCard{
-        padding:2% 5% 2% 5%;
+    .diaryCard {
+        padding: 2% 5% 2% 5%;
     }
 
     .diaryBox {
@@ -204,16 +212,18 @@
         font-size: 15px;
     }
 
-    #btnUpdateDiary {
-        margin-left: 5%;
+    .btnFabRight {
+        --wired-fab-bg-color: #f582ae;
+        margin-left: 3%;
+        float: right;
     }
 
-    .btnFab {
+    .btnFabLeft {
         --wired-fab-bg-color: #f582ae;
         margin-left: 3%;
     }
 
-    .diaryBox {
-        /*padding: 5% 5% 5% 5%;*/
+    .diaryTime {
+        float: right;
     }
 </style>

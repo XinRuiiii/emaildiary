@@ -1,6 +1,7 @@
 <template>
     <!--存储日记的box-->
     <div class="box">
+        <!--        瀑布流布局-->
         <waterfall v-if="isGet" id="diaryWaterFall" :line-gap="230" :watch="diaries">
             <!-- each component is wrapped by a waterfall slot -->
             <waterfall-slot
@@ -8,8 +9,8 @@
                     :width="200"
                     :height="item.height"
                     :order="index"
-                    :key="item.id"
-            >
+                    :key="item.id">
+                <!--                每个日记卡片-->
                 <wired-card class="lateDiaryCard" @click="toDiaryDetail(index)" :fill="item.color">
                     <div class="lateDiary" :style="{height:item.height+'px'}">
                         <wired-card class="diaryTime">{{item.releaseTime}}</wired-card>
@@ -19,6 +20,7 @@
             </waterfall-slot>
         </waterfall>
         <wired-button v-if="isGet" @click="getPagingDiaries">加载更多</wired-button>
+        <!--        没有日记-->
         <wired-card v-if="!isGet" fill="#FFB6C1">
             快去写第一篇日记吧
         </wired-card>
@@ -55,10 +57,8 @@
         created() {
             this.getPagingDiaries()
         },
-        mounted() {
-            document.querySelector('.box').addEventListener('scroll', this.handleScroll, true)
-        },
         methods: {
+            // 计算每个日记的显示内容
             getShow: function (index) {
                 const re1 = new RegExp("<.+?>", "g");
                 let diary = this.diaries[index].node.content
@@ -79,6 +79,7 @@
                 result.releaseTime = this.diaries[index].node.releaseTime.substring(0, 10)
                 return result;
             },
+            // 设置显示的日记列表
             setShows: function () {
                 this.shows = []
                 for (let i = 0; i < this.diaries.length; i++) {
@@ -125,23 +126,7 @@
                         title: diary.title
                     }
                 })
-            },
-            handleScroll() {
-                // TODO 滚动条检测待完成，暂时用按钮替代
-                let el = document.querySelector('.box')
-                let scrollTop = el.scrollTop
-                let scrollHeight = el.scrollHeight
-                let clientHeight = el.clientHeight
-                // console.log('scrollTop:' + scrollTop)
-                // console.log('scrollHeight' + scrollHeight)
-                // console.log('clientHeight' + clientHeight)
-                // console.log('offectTop' + el.offsetTop)
-                if (scrollTop + clientHeight === scrollHeight) {
-                    console.log("距顶部" + scrollTop + "可视区高度" + clientHeight + "滚动条总高度" + scrollHeight)
-                    alert("距顶部" + scrollTop + "可视区高度" + clientHeight + "滚动条总高度" + scrollHeight)
-                    alert('滚动完毕')
-                }
-            },
+            }
         }
 
     }
@@ -151,8 +136,8 @@
     .box {
         overflow: scroll;
         overflow-x: hidden;
-        height: 100px;
         align-items: center;
+        height: 500px;
     }
 
     .lateDiaryCard {

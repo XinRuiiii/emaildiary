@@ -2,10 +2,14 @@
     <div id="diary">
         <wired-card class="frame" elevation="4" fill="#fef6e4">
             <div class="page">
+                <!--                时间卡片-->
                 <div class="editorHeader">
                     <time-card id="timeCard"></time-card>
-                    <wired-button id="btnSend" @click="sendDiary" elevation="3">保存</wired-button>
+                    <wired-fab class="btnFabSend" @click="sendDiary">
+                        <font-awesome-icon icon="save"/>
+                    </wired-fab>
                 </div>
+                <!--                编辑日记-->
                 <div id="diaryTextArea">
                     <DiaryEditor :diary-text.sync="diaryText"
                                  :diary-title.sync="diaryTitle"
@@ -13,6 +17,7 @@
                                  :editor-height="screenHeight*0.5">
                     </DiaryEditor>
                 </div>
+
             </div>
         </wired-card>
     </div>
@@ -104,8 +109,13 @@
         align-items: center;
     }
 
-    #btnSend {
+    .btnFabSend {
+        --wired-fab-bg-color: #f582ae;
         margin-left: 8%;
         margin-top: 2%;
+    }
+
+    #dialog {
+        --wired-dialog-z-index: 999
     }
 </style>

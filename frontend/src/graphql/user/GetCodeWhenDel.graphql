@@ -1,0 +1,5 @@
+mutation GetCodeWheDelete{
+    getCodeWhenDelete {
+        success
+    }
+}

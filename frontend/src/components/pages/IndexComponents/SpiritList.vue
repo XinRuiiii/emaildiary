@@ -18,7 +18,5 @@
 
 <style scoped>
     .hello {
-        margin-left: 70%;
-        margin-top: 15%;
     }
 </style>

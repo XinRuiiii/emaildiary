@@ -2,24 +2,27 @@ import RefreshToken from "../graphql/diarysend/RefreshToken.graphql";
 import apolloProvider from "../apollo";
 import router from "../router";
 
-let getCurrentTime = ((new Date()).valueOf()) / 1000
+
+function getCurrentTime() {
+    return ((new Date()).valueOf()) / 1000
+}
 
 export async function getToken() {
-    // TODO 全局函数用于token检验，时间戳检验待完成
+    if(localStorage.getItem('token')==='null'){
+        alert('未登录，请先登录！')
+        await router.push({name: 'signIn'})
+    }
     let payload = JSON.parse(localStorage.getItem('payload'))
-    const refreshExpiresIn = localStorage.getItem('refreshExpiresIn');
-    console.log('exp - 30:', parseInt(payload.exp) - 30)
-    console.log('currentTime', getCurrentTime)
-    console.log('refreshExpiresIn - 60', refreshExpiresIn - 60)
+    const refreshExpiresIn = localStorage.getItem('refreshExpiresIn')
     // payload 为空说明用户已经退出登录
     if (payload.exp === '') {
         alert('您尚未登录，请先登录！')
-        this.$router.push({name: 'signIn'})
-    } else if (getCurrentTime < (payload.exp - 30)) {
+        await this.$router.push({name: 'signIn'})
+    } else if (getCurrentTime() < (payload.exp - 30)) {
         // 当前时间戳小于 token 过期时间戳，说明 token 没过期
         console.log('token未过期')
         return true
-    } else if (getCurrentTime < (refreshExpiresIn - 60)) {
+    } else if (getCurrentTime() < (refreshExpiresIn - 60)) {
         // 当前时间戳大于等于 token 过期时间戳，但小于 refreshToken 时间戳
         // 说明 token 过期，但是 refreshToken 没过期
         console.log('token已过期，updateToken')
@@ -28,12 +31,11 @@ export async function getToken() {
             state=value
             }
         )
-        console.log('state' + state)
         return state
     } else {
         // refreshToken 和 token 都过期了
         alert('登录信息已过期，请先登录！')
-        router.push({name: 'signIn'})
+        await router.push({name: 'signIn'})
     }
     return false
 }

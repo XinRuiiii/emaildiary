@@ -11,5 +11,7 @@ module.exports = {
             .loader('graphql-tag/loader')
             .end()
     },
+    publicPath: process.env.NODE_ENV === 'production'? './': '/',
+    runtimeCompiler: true,
 
 };

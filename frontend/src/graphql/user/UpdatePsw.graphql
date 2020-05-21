@@ -1,0 +1,6 @@
+mutation UpdatePassword($code: String!, $password: String!) {
+    # 修改密码
+    updatePassword (code: $code, password: $password) {
+        success
+    }
+}

@@ -1,6 +1,6 @@
-mutation DeleteUser {
+mutation DeleteUser($code:String!) {
     # 注销
-    deleteUser {
+    deleteUser(code:$code) {
         success
         # true 表示当前用户有效，可以登录
         # false 表示已注销，但数据还在，将来可以写 30 天内允许恢复

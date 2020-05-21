@@ -3,11 +3,9 @@ import Index from './components/pages/Index'
 import Vue from 'vue'
 import sendDiaryView from './components/pages/SendDiaryView'
 import showDiaryView from './components/pages/ShowDiaryView'
-
-import EditTest from "./components/pages/EditTest"
-import SignInOrUp from "./components/pages/SignInOrUp";
-import UserSet from "./components/pages/UserSet";
-import DiaryView from "./components/pages/DiaryView";
+import SignInOrUp from "./components/pages/SignInOrUp"
+import DiaryView from "./components/pages/DiaryView"
+import SettingView from "./components/pages/SettingView"
 
 Vue.use(Router);
 
@@ -31,11 +29,6 @@ export default new Router({
             component: showDiaryView
         },
         {
-            path: '/edit',
-            name: 'edit',
-            component: EditTest
-        },
-        {
             path: '/signIn',
             name: 'signIn',
             component: SignInOrUp
@@ -43,8 +36,9 @@ export default new Router({
         {
             path: '/set',
             name: 'set',
-            component: UserSet
+            component: SettingView
         },
+        {
             path: '/diary',
             name: 'diary',
             component: DiaryView

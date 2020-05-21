@@ -1,21 +1,15 @@
 <template>
     <div class="dropDown">
-        <wired-button class="dropBtn">登录</wired-button>
-        <div class="dropDownContent">
-                <wired-button v-on:click="signIn">
-                    登录
-                </wired-button>
-                <wired-button v-on:click="signIn">
-                    注册
-                </wired-button>
-            <wired-button v-on:click="logout">退出登录</wired-button>
-        </div>
+        <!--        退出登录-->
+        <wired-fab class="btnFab btnFabMarginLeft" @click="logout">
+            <font-awesome-icon icon="sign-out-alt"/>
+        </wired-fab>
     </div>
 </template>
 
 <script>
     import Logout from '../../../graphql/user/Logout.graphql';
-    import {getToken} from "../../../getToken";
+    import {getToken} from "../../../utils/token";
 
     export default {
         name: "Avatar",
@@ -34,10 +28,10 @@
                         }
                     })
                     .then(() => {
-                        localStorage.setItem('payload', '');
-                        localStorage.setItem('token', '');
-                        localStorage.setItem('refreshToken', '');
-                        localStorage.setItem('refreshExpiresIn', '');
+                        localStorage.setItem('payload', null);
+                        localStorage.setItem('token', null);
+                        localStorage.setItem('refreshToken', null);
+                        localStorage.setItem('refreshExpiresIn', null);
                         alert('已退出登录并清空存储信息');
                     })
                     .catch((error) => {
@@ -45,7 +39,7 @@
                         console.log('退出登录失败原因：', error.message)
                     })
             },
-            signIn(){
+            signIn() {
                 this.$router.push('/signIn')
             }
         }
@@ -53,35 +47,4 @@
 </script>
 
 <style scoped>
-    .dropDown {
-        position: absolute;
-        margin-top: 1.8%;
-        margin-left: 89%;
-        display: inline-block;
-    }
-
-    .dropBtn {
-        cursor: pointer;
-        color: black;
-    }
-
-    .dropDownContent {
-        display: none;
-        position: absolute;
-        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    }
-
-    .dropDownContent wired-button {
-        text-decoration: none;
-        display: block;
-    }
-    .dropDownContent wired-button:hover{
-        background-color: beige;
-    }
-    .dropDown:hover .dropDownContent{
-        display: block;
-    }
-    .dropDown:hover .dropBtn{
-        background-color: aliceblue;
-    }
 </style>

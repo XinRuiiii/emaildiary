@@ -1,7 +1,7 @@
 <template>
-    <div id="dateSelect">
+    <div id="dateSelect" :style="{width: selectWidth}">
+        <!--        选择年份-->
         <div id="yearSelectBox">
-            <wired-card fill="#8bd3dd">年份</wired-card>
             <wired-button @click="getLastYear">
                 <font-awesome-icon icon="caret-left"/>
             </wired-button>
@@ -10,8 +10,8 @@
                 <font-awesome-icon icon="caret-right"/>
             </wired-button>
         </div>
+        <!--        选择月份-->
         <div id="monthSelectBox">
-            <wired-card fill="#8bd3dd">月份</wired-card>
             <wired-button @click="getLastMonth">
                 <font-awesome-icon icon="caret-left"/>
             </wired-button>
@@ -33,7 +33,8 @@
         name: "MonthSelect",
         props: [
             'year',
-            'month'
+            'month',
+            'selectWidth'
         ],
         data() {
             return {
@@ -54,10 +55,6 @@
                 this.currentYear = date.getFullYear()
                 this.currentMonth = date.getMonth() + 1
             },
-            // getYear: function () {
-            //     console.log(document.getElementById('yearSelect').selected)
-            //     this.$emit('update:year', document.getElementById('yearSelect').selected)
-            // },
             getLastYear: function () {
                 if (this.selectYear > 2000) {
                     this.selectYear--
@@ -74,18 +71,14 @@
                     alert('已经是' + this.selectYear + '年啦')
                 }
             },
-            // getMonth: function () {
-            //     console.log(document.getElementById('monthSelect').selected)
-            //     this.$emit('update:month', document.getElementById('monthSelect').selected)
-            // },
             getLastMonth: function () {
-                if (this.selectMonth >1) {
+                if (this.selectMonth > 1) {
                     this.selectMonth--
                     this.$emit('update:month', this.selectMonth)
                 }
             },
             getNextMonth: function () {
-                if(this.selectMonth<12&(this.selectYear<this.currentYear|this.selectMonth<this.currentMonth)){
+                if (this.selectMonth < 12 & (this.selectYear < this.currentYear | this.selectMonth < this.currentMonth)) {
                     this.selectMonth++
                     this.$emit('update:month', this.selectMonth)
                 }
@@ -95,15 +88,10 @@
 </script>
 
 <style scoped>
-    #dateSelect{
+    #dateSelect {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
-    }
-    #yearSelectBox{
-
-    }
-    #monthSelect {
-
+        justify-content: space-evenly;
+        width: 500px;
     }
 </style>
